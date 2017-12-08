@@ -30,7 +30,7 @@ using namespace cv;
 
 #define BOT_L 34
 #define BOT_W 20
-#define BOT_M_ALPHA 30
+#define BOT_M_ALPHA 15
 
 #define PI 3.14159
 

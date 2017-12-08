@@ -1,17 +1,20 @@
 #include "include/Planner.hpp"
+#include <cstdlib>
+
 
 State getStartState();
 State getTargetState();
 
-int main(){
+int main(int argc,  char** argv){
 
 	printf("Hello Hybrid_Astar\n");
 	printf("Init Map !\n");
 	Map map;
 	printf("Start State\n");
 	State start=getStartState();
-	printf("Get State\n");
-	State target=getTargetState();
+	printf("Get State %i %i %i argc%i\n",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]), argc);
+	State target=State(atoi(argv[1]),atoi(argv[2]),atoi(argv[3])/Theta_Res);
+	//getTargetState();
 	printf("\n \n Start Planner\n");
 	Planner astar;
 	
@@ -28,5 +31,5 @@ State getStartState()
 State getTargetState()
 {
 	//to do: read from yml file
-	return State(50, 300, 45);
+	return State(50, 300, 0);
 }

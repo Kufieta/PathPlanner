@@ -38,11 +38,13 @@ void Planner::plan(State start, State target, Map map){
 	display.drawObs(map);
 	display.drawCar(start,0);
 	display.drawCar(target,255);
+	display.show(0);
 
 	int vis[GX][GY][Theta];
 	memset(vis, 0, sizeof(int)*GX*GY*Theta);
 	State Dummy = start;
 	int iter=0;
+	int num_try=0;
 	while(pq.size()>0)
 	{
 		State current=pq.top();
@@ -54,6 +56,7 @@ void Planner::plan(State start, State target, Map map){
 			cout<<"Reached target., targetx:"<< target.gx << "targety:" << target.gy << endl;
 			cout<<"Reached target., currentx:"<< current.gx << "currenty:" << current.gy << endl;
 			cout<<"Reached target., Dummy:"<< Dummy.gx << "currenty:" << Dummy.gy << endl;
+			cout<<"Done with iterations:"<< num_try << endl;
 
 			
 			current.change=PRIORITY_OBSTACLE_NEAR*(map.obs_dist_max-map.nearest_obstacle_distance(current))/(float)(map.obs_dist_max-1)+
@@ -63,7 +66,7 @@ void Planner::plan(State start, State target, Map map){
 				
 				
 				current.velocity=VELOCITY_MAX/current.change;
-				display.drawCar(Dummy,255);
+				display.drawCar(Dummy,0);
 			        display.show(1);//2000/Dummy.velocity);//This can be removed while executing the algo
 				Dummy=previous[current.gx][current.gy][current.gtheta];
 				Dummy.change=PRIORITY_MOVEMENT*fabs(Dummy.theta-current.theta)/(2.0*BOT_M_ALPHA)+
@@ -86,13 +89,14 @@ void Planner::plan(State start, State target, Map map){
 
 		vector<State> next=current.getNextStates();
 		//Wie bekomme ich den gewonnenen Pfad?
+		
 		for(int i=0;i<next.size();i++){
-			display.drawCar(next[i],0);
+			//display.drawCar(next[i],0);
 			if(!map.checkCollision(next[i])){
 
 
 				if(!vis[next[i].gx][next[i].gy][next[i].gtheta]){
-					//display.drawCar(next[i],100);
+					display.drawCar(next[i],100);
 					current.next=&(next[i]);
 					next[i].previous=&(current);
 					//was bedeutet das? Ich vermute ... geradeaus ist günstiger?
@@ -108,9 +112,12 @@ void Planner::plan(State start, State target, Map map){
 
 				}
 			}
+
 		}
+
+		num_try++;
 	}
-	cout<<"Done."<<endl;
+	cout<<"Done with iterations:"<< num_try << endl;
 
 	int x = 0;
 	display.show(0);
